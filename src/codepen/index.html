@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>iMIX</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.4/angular-material.min.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.4/angular-material.min.js'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css'>
+<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <div ng-app="mxmx" ng-cloak>
+  <div ng-controller="MixerController as $ctrl" flex layout="column">
+    <md-toolbar>
+        <md-progress-linear md-mode="indeterminate" ng-hide="$ctrl.mxAudioContext.ready"></md-progress-linear>
+      <div class="md-toolbar-tools">
+       <h2 layout-padding flex>Mixim</h2>
+       <div>
+        <md-button ng-click="$ctrl.play()" ng-show="$ctrl.mxAudioContext.ready && !$ctrl.mxAudioContext.playing"><i class="fa fa-play" style="font-size: 24px; padding: 4px;"></i></md-button>
+        <md-button ng-click="$ctrl.pause()" ng-show="$ctrl.mxAudioContext.ready && $ctrl.mxAudioContext.playing"><i class="fa fa-pause" style="font-size: 24px; padding: 4px;"></i></md-button>
+        <md-button ng-click="$ctrl.stop()" ng-show="$ctrl.mxAudioContext.ready && $ctrl.mxAudioContext.playing"><i class="fa fa-stop" style="font-size: 24px; padding: 4px;"></i></md-button>
+       </div>
+     </div>
+    </md-toolbar>
+    <md-content layout="row" layout-wrap>
+      <md-card flex="100">
+       <md-card-title>
+        <md-card-title-text>
+         <md-input-container>
+          <h5 ng-bind="$ctrl.preset.name"></h5>
+          <h6 ng-bind="$ctrl.preset.mainTrack.name"></h6>
+         </md-input-container>
+        </md-card-title-text>
+       </md-card-title>
+       <md-card-content ng-if="$ctrl.mxAudioContext.ready">
+         <div flex layout="row">
+          <div layout-align="start center" flex>
+            <p>{{$ctrl.mxAudioContext.currentTime}}</p>    
+         </div>
+          <div>
+            <p>{{$ctrl.mxAudioContext.duration}}</p>    
+          </div>
+         </div>
+        <div>
+         <wavesurfer url="$ctrl.preset.mainTrack.url" options="$ctrl.preset.mainTrack.options"></wavesurfer>
+        </div>
+       </md-card-content>
+       <md-card-actions>
+       </md-card-actions>
+      </md-card>
+      <mx-track flex="50" ng-repeat="track in $ctrl.mxAudioContext.tracks" track="track"></mx-track>
+    </md-content>
+  </div>
+</div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.4/angular-material.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular-animate.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular-aria.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular-messages.min.js'></script>
+<script src='https://danielstern.github.io/ngAudio/angular.audio.js'></script>
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>

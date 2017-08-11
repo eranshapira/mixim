@@ -1,0 +1,423 @@
+const app = angular.module('mxmx', ['ngMaterial', 'ngAnimate', 'ngAudio', 'wavesurfer.angular']);
+const trackComponentTemplate = `<md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <md-input-container>
+  <h6 ng-bind="$ctrl.track.name"></h6>
+<small ng-bind="$ctrl.track.url"></small>
+          </md-card-title-text>
+          <md-card-title-media>
+          </md-card-title-media>
+        </md-card-title>
+        <md-card-content>
+         <div flex layout="row">
+          <div layout-align="start center" flex>
+            <p>{{$ctrl.audio.currentTime}}</p>    
+         </div>
+          <div>
+            <p>{{$ctrl.audio.remaining}}</p>    
+          </div>
+         </div>
+          <p ng-if="$ctrl.audio.canPlay" ng-init="$ctrl.mxAudioContext.setReady($ctrl.track)">
+         <md-slider flex min="0" max="{{ $ctrl.audio.duration }}" ng-model="$ctrl.audio.currentTime">
+   <md-progress-linear md-mode="determinate" value="{{$ctrl.audio.progress * 100}}"></md-progress-linear>
+          </p>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Play" ng-click="$ctrl.audio.play()" ng-show="$ctrl.audio.paused">
+            <i class="fa fa-play" aria-hidden="true"></i>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Stop" ng-click="$ctrl.audio.pause()" ng-show="$ctrl.audio.canPlay && !$ctrl.audio.paused">
+            <i class="fa fa-pause" aria-hidden="true"></i>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Decrease volume">
+            <i class="fa fa-volume-down" aria-hidden="true"></i>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Increase volume">
+            <i class="fa fa-volume-up" aria-hidden="true"></i>
+          </md-button>
+        </md-card-actions>
+      </md-card>`;
+const mainTrack = {
+ name: 'Israel Anthem',
+ url: 'http://www.noiseaddicts.com/samples_1w72b820/4207.mp3',
+ options: {
+  
+ },
+ endSeconds: 0,
+ startSeconds: 0,
+ delay: 0,
+ gain: 0,
+};
+const tracks = [
+  {
+    name: 'Hairdryer',
+    url: 'http://shapiraweb.com/ronen/Hairdryer.mp3',
+    cue: 10,
+    gain: 0,
+  }, {
+    name: 'Phone Ringing',
+    url: 'http://shapiraweb.com/ronen/Phone_Ringing.mp3',
+    cue: 20,
+    gain: 0,
+  }, {
+    name: 'Kitchen Noises',
+    url: 'http://shapiraweb.com/ronen/Kitchen_Noises.mp3',
+    cue: 30,
+    gain: 0,
+  }, {
+    name: 'Toliet Flush',
+    url: 'http://shapiraweb.com/ronen/Toliet_Flush_Very_Close.mp3',
+    cue: 40,
+    gain: 0,
+  }
+]
+app.constant('Preset', {
+ name: 'First preset',
+ mainTrack,
+ tracks,
+});
+app.constant('Tracks', tracks);
+
+class TrackController {
+  constructor(ngAudio, $scope, $timeout, mxAudioContext) {
+   this.ngAudio = ngAudio;
+   this.$scope = $scope;
+   this.$timeout = $timeout;
+   this.mxAudioContext = mxAudioContext;
+  }
+ 
+ $onInit() {
+   this.audio = this.ngAudio.load(this.track.url);
+   this.track.audio = this.audio;
+   this.$scope.$on('mxPause', () => {
+    this.$timeout.cancel(this.delayPlayTimer);
+    this.audio.pause();
+   });
+   this.$scope.$on('mxPlay', () => {
+    this.delayPlayTimer = this.$timeout(() => {
+     this.audio.currentTime = (this.mxAudioContext.currentTime) + this.track.startSeconds - this.track.delay;
+     this.audio.play();
+    }, (this.track.delay - this.mxAudioContext.currentTime) * 1000);
+    if (this.track.endSeconds) {
+     this.$timeout(() => {
+      this.audio.pause();
+     }, (this.track.endSeconds - this.mxAudioContext.currentTime) * 1000);
+    }
+   });
+ }
+}
+
+class MixerController {
+ constructor(Preset, Tracks, mxAudioContext, $scope) {
+  this.tracks = Tracks;
+  this.preset = Preset;
+  this.mxAudioContext = mxAudioContext;
+  this.$scope = $scope;
+ }
+ 
+ play() {
+  this.mxAudioContext.startTime = new Date();
+  this.mxAudioContext.playing = true;
+  this.$scope.$broadcast('mxPlay');
+ }
+ 
+ pause() {
+  this.mxAudioContext.pauseTime = new Date();
+  this.mxAudioContext.playing = false;
+  this.mxAudioContext.msPassed = (this.mxAudioContext.pauseTime - this.mxAudioContext.startTime) / 1000;
+  this.$scope.$broadcast('mxPause');
+ }
+ 
+ stop() {
+  this.mxAudioContext.msPassed = 0;
+  delete this.mxAudioContext.startTime;
+  delete this.mxAudioContext.pauseTime;
+  this.mxAudioContext.playing = false;
+  this.$scope.$broadcast('mxPause');
+  
+ }
+}
+
+class MxAudioContext {
+ constructor(Tracks, $rootScope) {
+  this.currentMs = 0;
+  this.tracks = Tracks;
+  this.playing = false;
+  this.readyTracks = 0;
+  this.$rootScope = $rootScope;
+ }
+ 
+ get ready() {
+  return this.readyTracks === this.tracks.length;
+ }
+ 
+ get duration() {
+  return Math.max(...this.tracks.map(x => (x.endSeconds || x.audio.audio.duration) - x.startSeconds + x.delay));
+ }
+ 
+ get currentTime() {
+  return Math.min(0, ...this.tracks.map(x => Math.max(0, (x.audio.currentTime || 0) + x.delay - x.startSeconds)));
+ }
+ 
+ set currentTime(durationValue) {
+  this.msPassed = durationValue;
+  this.tracks.forEach(x => x.audio.currentTime = durationValue - x.startSeconds + x.delay);
+ }
+ 
+ setReady(track) {
+  this.readyTracks++;
+  if (this.readyTracks === this.tracks.length) {
+   this.$rootScope.$broadcast('mxReady');
+  }
+ }
+}
+
+app.controller('MixerController', MixerController);
+app.component('mxTrack', {
+  bindings: {
+   track: '<',
+   timeDelay: '<',
+  },
+  template: trackComponentTemplate,
+  controller: TrackController,
+})
+
+app.service('mxAudioContext', MxAudioContext)
+
+(function (angular, WaveSurfer) {
+    'use strict';
+
+    var module = angular.module('wavesurfer.angular', ['ui.slider']);
+
+    module
+        .directive('wavesurfer', wavesurferDirective)
+        .filter('hms', hmsFilter);
+
+    wavesurferDirective.$inject = ['$rootScope', '$timeout'];
+    function wavesurferDirective($rootScope, $timeout) {
+        var uuid = 1;
+
+        return {
+            restrict: 'AE',
+            scope: {
+                url: '=',
+                peaks: '=?',
+                autoLoad: '=?',
+                options: '='
+
+            },
+            template: `<div class="waveform" id="{{::uniqueId}}">
+    <div class="waveform-control">
+        <span ng-click="load()">
+            <i class="fa" ng-class="{'fa-spinner fa-spin': isLoading, 'fa-play' : !isPlaying, 'fa-pause': isPlaying}"></i>
+        </span>
+    </div>
+    <div class="waveform-volume">
+        <i class="fa fa-volume-up" ng-click="isVolumeActive = !isVolumeActive"></i>
+        <div class="volume-control" ng-class="{active: isVolumeActive}">
+            <div ui-slider="{orientation: 'vertical', range: 'min'}" class="slider"
+                 min="0"
+                 max="100"
+                 step="1"
+                 ng-model="volume">
+            </div>
+        </div>
+    </div>
+    <div class="waveform-wavesurfer">
+        <div class="time-total">{{progress | hms}}</div>
+        <div class="time-left">-{{remaining | hms}}</div>
+        <div class="audio">
+            <div class="default-wave" ng-show="!isWavesurferLoaded()" ng-style="{'margin-top': defaultWavePosition}"></div>
+        </div>
+    </div>
+</div>`,
+            link: function (scope, element) {
+                var waveformContainer = element.find('div.audio')[0],
+                    length = 0,
+                    wavesurfer = undefined,
+                    defaultOptions = {
+                        hideScrollbar: true,
+                        height: 50,
+                        waveColor: "#337ab7",
+                        normalize: true,
+                        progressColor: "#23527c",
+                        container: waveformContainer
+                    };
+
+                var options = angular.extend(defaultOptions, scope.options);
+
+                waveformContainer.style.height = options.height + 'px';
+
+                scope.isPlaying = false;
+                scope.isLoading = false;
+                scope.uniqueId = 'waveform_' + (uuid++);
+                scope.isVolumeActive = false;
+                scope.volume = 50;
+                scope.progress = 0;
+                scope.remaining = 0;
+                scope.autoLoad = !!scope.autoLoad;
+                scope.defaultWavePosition = options.height / 2;
+
+
+                /**
+                 * On ready
+                 */
+                var ready = function () {
+                    length = Math.floor(wavesurfer.getDuration());
+
+                    if (!scope.autoLoad) {
+                        scope.$emit('wavesurfer:stop');
+                    }
+
+                    $timeout(function () {
+                        scope.remaining = length;
+                        scope.isLoading = false;
+                        scope.playPause();
+                    });
+                };
+
+                /**
+                 * Update time during playing audio
+                 * @param {Number} time
+                 */
+                var audioprocess = function (time) {
+                    $timeout(function () {
+                        scope.progress = time;
+                        scope.remaining = length - time;
+                    });
+                };
+
+                /**
+                 * On finish
+                 * Move cursor to start
+                 */
+                var finish = function () {
+                    scope.isPlaying = false;
+                    wavesurfer.seekTo(0);
+                };
+
+                /**
+                 * Init WaveSurfer functionality
+                 * @param {Array} peaks peak array
+                 */
+                var init = function (peaks) {
+                    wavesurfer = WaveSurfer.create(options);
+                    wavesurfer.load(scope.url, peaks || null);
+
+                    wavesurfer.on('ready', ready);
+                    wavesurfer.backend.on('audioprocess', audioprocess);
+                    wavesurfer.on('finish', finish);
+
+                    scope.$watch('volume', function (value) {
+                        if (value) {
+                            wavesurfer.setVolume(value / 100);
+                        }
+                    });
+                };
+
+                /**
+                 * Load audio record
+                 */
+                scope.load = function () {
+                    if (!angular.isDefined(wavesurfer)) {
+                        scope.isLoading = true;
+                        init(scope.peaks);
+                    } else {
+                        if (!wavesurfer.isPlaying()) {
+                            scope.$emit('wavesurfer:stop');
+                        }
+                        scope.playPause();
+                    }
+                };
+
+                //is autoLoad param is passed
+                //load audio file automatically
+                if (scope.autoLoad) {
+                    scope.load();
+                }
+
+                /**
+                 * Pause
+                 */
+                scope.pause = function () {
+                    wavesurfer.pause();
+                    scope.isPlaying = false;
+                };
+
+                /**
+                 * Play or pause
+                 */
+                scope.playPause = function () {
+                    scope.isPlaying = !scope.isPlaying;
+                    scope.isVolumeActive = false;
+                    wavesurfer.playPause();
+                };
+
+                /**
+                 * Stop
+                 */
+                scope.stop = function () {
+                    wavesurfer.stop();
+                    scope.isPlaying = false;
+                };
+
+                /**
+                 * Forward
+                 */
+                scope.forward = function () {
+                    wavesurfer.skipForward();
+                };
+
+                /**
+                 * Backward
+                 */
+                scope.backward = function () {
+                  wavesurfer.backward();
+                };
+
+                /**
+                 * Check if WaveSurfer is loaded
+                 * @returns {Boolean}
+                 */
+                scope.isWavesurferLoaded = function () {
+                    return angular.isDefined(wavesurfer);
+                };
+
+                /**
+                 * Subscribe on wavesurfer:stop event
+                 * and stop another wavesurfer
+                 */
+                $rootScope.$on('wavesurfer:stop', function () {
+                    if (angular.isDefined(wavesurfer) && wavesurfer.isPlaying()) {
+                        scope.stop();
+                    }
+                });
+            }
+        };
+    }
+
+    hmsFilter.$inject = [];
+    function hmsFilter() {
+        return function (str) {
+            var duration = parseInt(str, 10),
+                hours = Math.floor(duration / 3600),
+                minutes = Math.floor((duration - (hours * 3600)) / 60),
+                seconds = duration - (hours * 3600) - (minutes * 60);
+
+            if (hours < 10) {
+                hours = '0' + hours;
+            }
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+            if (seconds < 10) {
+                seconds = '0' + seconds;
+            }
+
+            return hours + ':' + minutes + ':' + seconds;
+        };
+    }
+
+}(window.angular, window.WaveSurfer));
+

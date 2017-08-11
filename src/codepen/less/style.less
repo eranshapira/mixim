@@ -1,0 +1,135 @@
+html, body {
+  font-family: 'Tahoma';
+  max-width: 100%;
+  overflow: auto;
+}
+
+mx-track {
+  min-width: 500px;
+}
+
+
+.waveform {
+    padding: 25px 2%;
+    margin: 0;
+    font-size: 14px;
+    white-space: nowrap;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.waveform i {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px;
+}
+
+.waveform-volume,
+.waveform-control,
+.waveform-wavesurfer {
+    padding: 15px 10px;
+}
+
+.waveform-control {
+    cursor: pointer;
+    width: 50px;
+    float: left;
+}
+
+.waveform-wavesurfer {
+    vertical-align: middle;
+    overflow: hidden;
+    padding: 0 10px;
+}
+
+.waveform-wavesurfer .time-total,
+.waveform-wavesurfer .time-left {
+    display: block;
+    float: left;
+    vertical-align: middle;
+    margin: 0 10px;
+    font-size: 13px;
+    width: 50px;
+    padding: 15px 0;
+}
+
+.waveform-wavesurfer .time-left {
+    float: right;
+}
+
+.waveform-wavesurfer .audio {
+    vertical-align: middle;
+    height: 30px;
+    overflow: hidden;
+}
+
+.waveform-wavesurfer .default-wave {
+    border: 1px solid #2A9FD6;
+}
+
+.waveform-volume {
+    position: relative;
+    width: 30px;
+    text-align: center;
+    float: right;
+    padding: 15px 0;
+}
+
+.waveform-volume .volume-control {
+    border-radius: 3px;
+    background-color: #ccc;
+    padding: 10px;
+    position: absolute;
+    z-index: 5;
+    top: -110px;
+    left: 50%;
+    display: none;
+    margin-left: -13px;
+}
+
+.volume-control.active {
+    display: block;
+}
+
+.volume-control:after {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 5px 0 5px;
+    border-color: #ccc transparent transparent transparent;
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    margin-left: -5px;
+    display: block;
+    content: "";
+}
+
+.waveform-volume .slider {
+    width: 6px;
+    height: 80px;
+    border-radius: 2px;
+    background-color: #cfdae2;
+    position: relative;
+}
+
+.waveform-volume .slider-active,
+.waveform-volume .ui-slider-range {
+    background-color: #899eae;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.waveform-volume .pin,
+.waveform-volume .ui-slider-handle {
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    left: -7px;
+    margin-bottom: -10px;
+    width: 20px;
+    height: 20px;
+    z-index: 5;
+}

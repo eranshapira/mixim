@@ -1,0 +1,20 @@
+<div flex layout="column">
+  <md-toolbar>
+      <md-progress-linear md-mode="indeterminate" ng-hide="$ctrl.wavesurfer"></md-progress-linear>
+    <div class="md-toolbar-tools">
+     <h2 layout-padding flex>MIXIM</h2>
+     <div ng-show="$ctrl.wavesurfer" class="play-controls" ng-class="{ 'playing': $ctrl.wavesurfer.isPlaying() }">
+      <md-button ng-click="$ctrl.wavesurfer.play()" ng-disabled="$ctrl.wavesurfer.isPlaying()"><i class="fa fa-play"></i></md-button>
+      <md-button ng-click="$ctrl.wavesurfer.pause()" ng-disabled="!$ctrl.wavesurfer.isPlaying()"><i class="fa fa-pause"></i></md-button>
+      <md-button ng-click="$ctrl.wavesurfer.stop()" ng-disabled="!$ctrl.wavesurfer.isPlaying()"><i class="fa fa-stop"></i></md-button>
+     </div>
+   </div>
+  </md-toolbar>
+  <md-content layout="row" layout-wrap>
+    <div flex="100">
+      <mx-wavesurfer url="$ctrl.mainTrack.url" on-ready="$ctrl.onReady(wavesurfer)"></mx-wavesurfer>
+    </div>
+    <mx-track flex="50" ng-repeat="track in $ctrl.mxAudioContext.tracks" track="track"></mx-track>
+  </md-content>
+audioprocess
+</div>
