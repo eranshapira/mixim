@@ -4,16 +4,14 @@ import './style.less';
 
 import wavesurfer from '../wavesurfer';
 import track from '../track';
-import mainTrack from '../main-track';
 import preset from '../preset';
 
 import component from './component.js';
 
-export default angular.module('imix.main', [
+export default angular.module('imix.mainTrack', [
   wavesurfer,
   preset,
   track,
-  mainTrack,
 ])
-.component('mxMain', component)
+.component('mxMainTrack', component)
 .name;

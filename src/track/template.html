@@ -1,0 +1,30 @@
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <h6 ng-bind="$ctrl.track.name"></h6>
+      <small ng-bind="$ctrl.track.url" title="{{ $ctrl.track.url }}"></small>
+    </md-card-title-text>
+    <md-card-title-media>
+      <div class="md-avatar" ng-bind="::$ctrl.track.index"
+        style="background: rgba({{ ::$ctrl.track.index * 30 % 255 }}, {{ ::$ctrl.track.index * 60 % 255 }}, {{ ::$ctrl.track.index * 90 % 255 }}, 0.6);">
+      </div>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-actions layout-align="end center">
+    <md-button class="md-icon-button" aria-label="Play" ng-click="$ctrl.audio.play()" ng-show="$ctrl.audio.paused">
+      <i class="fa fa-play" aria-hidden="true"></i>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Stop" ng-click="$ctrl.audio.stop()" ng-show="$ctrl.audio.canPlay && !$ctrl.audio.paused">
+      <i class="fa fa-stop" aria-hidden="true"></i>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Decrease volume">
+      <i class="fa fa-volume-down" aria-hidden="true"></i>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Increase volume">
+      <i class="fa fa-volume-up" aria-hidden="true"></i>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Delete" ng-click="$ctrl.onDelete($ctrl.$index)">
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </md-button>
+  </md-card-actions>
+</md-card>

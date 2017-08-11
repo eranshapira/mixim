@@ -1,12 +1,16 @@
-mx-wavesurfer {
-  display: block;
-  width: 100%;
-  min-height: 200px;
-  height: 100%;
-  > wave {
-    box-shadow: 0px 0px 8px 1px;
-    > wave {
-      border-right: 1px solid rgba(100, 100, 255, 0.7) !important;
-    }
+mx-track {
+  &:hover .md-avatar {
+    color: white;
+    background-color: black !important;
+  }
+  .md-avatar {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    color: white;
+    border-radius: 50%;
+    font-size: 18px;
+    padding-top: 10px;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 }

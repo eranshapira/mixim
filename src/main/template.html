@@ -3,18 +3,21 @@
       <md-progress-linear md-mode="indeterminate" ng-hide="$ctrl.wavesurfer"></md-progress-linear>
     <div class="md-toolbar-tools">
      <h2 layout-padding flex>MIXIM</h2>
-     <div ng-show="$ctrl.wavesurfer" class="play-controls" ng-class="{ 'playing': $ctrl.wavesurfer.isPlaying() }">
-      <md-button ng-click="$ctrl.wavesurfer.play()" ng-disabled="$ctrl.wavesurfer.isPlaying()"><i class="fa fa-play"></i></md-button>
-      <md-button ng-click="$ctrl.wavesurfer.pause()" ng-disabled="!$ctrl.wavesurfer.isPlaying()"><i class="fa fa-pause"></i></md-button>
-      <md-button ng-click="$ctrl.wavesurfer.stop()" ng-disabled="!$ctrl.wavesurfer.isPlaying()"><i class="fa fa-stop"></i></md-button>
-     </div>
    </div>
   </md-toolbar>
   <md-content layout="row" layout-wrap>
-    <div flex="100">
-      <mx-wavesurfer url="$ctrl.mainTrack.url" on-ready="$ctrl.onReady(wavesurfer)"></mx-wavesurfer>
-    </div>
-    <mx-track flex="50" ng-repeat="track in $ctrl.mxAudioContext.tracks" track="track"></mx-track>
+    <mx-main-track main-track="$ctrl.mainTrack" on-ready="$ctrl.onReady({ wavesurfer })" flex="100">
+    </mx-main-track>
+    <mx-track
+      flex="33"
+      ng-repeat="track in $ctrl.tracks"
+      track="track"
+      on-delete="$ctrl.deleteTrack($index)">
+    </mx-track>
+    <mx-new-track flex="33" title="Add new track" ng-click="$ctrl.addTrack()">
+          <md-button class="md-button">
+            <h1><span class="fa fa-plus-circle"></span></h1>
+          </md-button>
+    </mx-new-track>
   </md-content>
-audioprocess
 </div>
