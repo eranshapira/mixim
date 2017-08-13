@@ -2,7 +2,7 @@
   <md-card-title>{{ $ctrl.mainTrack.name }}</md-card-title>
   <md-card-content>
     <mx-wavesurfer url="$ctrl.mainTrack.url" on-ready="$ctrl.ready(wavesurfer)"></mx-wavesurfer>
-    <mx-tracks-overlay tracks="$ctrl.tracks"></mx-tracks-overlay>
+    <mx-track-overlay insertions="$ctrl.insertions" track-duration="$ctrl.wavesurfer.getDuration()"></mx-tracks-overlay>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center" class="play-controls">
    <md-button class="md-icon-button" ng-click="$ctrl.wavesurfer.play()" ng-disabled="$ctrl.wavesurfer.isPlaying()"><i class="fa fa-play"></i></md-button>

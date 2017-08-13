@@ -3,6 +3,7 @@ export default class MainController {
     this.Preset = Preset;
     this.mainTrack = Preset.mainTrack;
     this.tracks = Preset.tracks;
+    this.insertions = Preset.insertions;
   }
 
   onReady(wavesurfer) {
