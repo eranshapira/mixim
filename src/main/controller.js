@@ -11,7 +11,7 @@ export default class MainController {
 
   onReady(wavesurfer) {
     this.wavesurfer = wavesurfer;
-    wavesurfer.on('audioprocess', this.updateCurrentTime);
+    wavesurfer.on('audioprocess', () => this.currentTime = this.wavesurfer.getCurrentTime());
     wavesurfer.on('seek', this.updateCurrentTime);
   }
 
