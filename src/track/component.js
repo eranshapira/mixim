@@ -7,6 +7,7 @@ export default {
     track: '<',
     onReady: '&',
     onDelete: '&',
+    onAdd: '&',
   },
   controller,
 };

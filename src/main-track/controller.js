@@ -6,10 +6,13 @@ export default class MainTrackComponentController {
 
   ready(wavesurfer) {
     this.wavesurfer = wavesurfer;
-    this.onReady(wavesurfer);
+    this.onReady({ wavesurfer });
     this.wavesurfer.on('audioprocess', checkForTrigger.bind(this));
+    this.wavesurfer.on('seek', () => {
+      this.lastPosition = this.wavesurfer.getCurrentTime();
+    });
     this.wavesurfer.on('play', () => {
-      this.lastPosition = 0;
+      this.lastPosition = this.wavesurfer.getCurrentTime();
     });
   }
 }

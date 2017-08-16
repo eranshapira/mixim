@@ -1,4 +1,8 @@
-<div ng-bind="$ctrl.insert.id"
+<div
   style="left: {{ $ctrl.insert.cue / $ctrl.trackDuration * 100 }}%;
   background: rgba({{ ::$ctrl.insert.id * 30 % 255 }}, {{ ::$ctrl.insert.id * 60 % 255 }}, {{ ::$ctrl.insert.id * 90 % 255 }}, 0.6);">
+  <span ng-bind="$ctrl.insert.id" class="insert-id"></span>
+  <span ng-click="$ctrl.onDelete($ctrl.insert)" class="fa fa-times delete-btn"></span>
+  <div class="sub-section" ng-bind="$ctrl.insert.cue.toString() | secondsToDateTime | date:'mm:ss'">
+  </div>
 </div>

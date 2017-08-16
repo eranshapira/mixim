@@ -2,4 +2,5 @@
   ng-repeat="insert in $ctrl.insertions"
   insert="insert"
   track-duration="$ctrl.trackDuration"
+  on-delete="$ctrl.insertions.splice($index, 1)"
 ></mx-overlay-insert>

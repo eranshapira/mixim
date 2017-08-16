@@ -6,13 +6,20 @@
    </div>
   </md-toolbar>
   <md-content layout="row" layout-wrap>
-    <mx-main-track main-track="$ctrl.mainTrack" insertions="$ctrl.insertions" on-ready="$ctrl.onReady({ wavesurfer })" flex="100">
+    <mx-main-track main-track="$ctrl.mainTrack" insertions="$ctrl.insertions" on-ready="$ctrl.onReady(wavesurfer)" flex="100">
     </mx-main-track>
+    <div flex="100">
+      <h6 layout-align="center center">
+        <span>Current time:</span>
+        <span ng-bind="$ctrl.currentTime | secondsToDateTime | date:'mm:ss'"></span>
+      </h6>
+    </div>
     <mx-track
       flex="33"
       ng-repeat="track in $ctrl.tracks"
       track="track"
-      on-delete="$ctrl.deleteTrack($index)">
+      on-delete="$ctrl.deleteTrack($index)"
+      on-add="$ctrl.addInsert($ctrl.tracks[$index], $ctrl.currentTime)">
     </mx-track>
     <mx-new-track flex="33" title="Add new track" ng-click="$ctrl.addTrack()">
           <md-button class="md-button">

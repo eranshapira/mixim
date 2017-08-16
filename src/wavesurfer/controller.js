@@ -19,7 +19,7 @@ export default class WavesurferComponentController {
     const wavesurfer = WaveSurfer.create({
       container: this.$element[0],
       waveColor: 'rgba(100, 100, 255, 0.7)',
-      progressColor: 'purple'
+      progressColor: 'purple',
     });
     this.wavesurfer = wavesurfer;
     if (this.url) {

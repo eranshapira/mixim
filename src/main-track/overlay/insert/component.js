@@ -5,6 +5,7 @@ export default {
   bindings: {
     insert: '<',
     trackDuration: '<',
+    onDelete: '&',
   },
   controller,
 };

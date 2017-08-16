@@ -7,9 +7,64 @@ mx-overlay-insert {
     text-align: center;
     padding-top: 2px;
     display: inline-block;
-    // background: rgba(0,0,0,0.05);
     position: absolute;
     color: white;
-    top: -90px;
+    bottom:0px;
+    transform: translateX(-50%);
+    span {
+      transition: opacity 0.3s ease-in-out;
+      position: absolute;
+      left: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .delete-btn {
+      opacity: 0;
+      top: 6px;
+      outline: none;
+    }
+    .insert-id {
+      opacity: 1;
+    }
+    &:hover {
+      .delete-btn {
+        opacity: 1;
+      }
+      .insert-id {
+        opacity: 0;
+      }
+      &:before {
+        position: absolute;
+        height: 74px;
+        width: 1px;
+        opacity: 0.1;
+        content: ' ';
+        bottom: 24px;
+        background: inherit;
+        left: 12px;
+      }
+    }
+    .sub-section {
+      background: inherit;
+      color: white;
+      opacity: 0;
+      margin-top: 0px;
+      top: 16px;
+      transition-delay: 1s;
+      transition: all 0.3s ease-in-out;
+      width: 0px;
+      &.transparent {
+        background: transparent;
+        color: black;
+      }
+    }
+    &:hover .sub-section {
+      margin-top: 10px;
+      opacity: 1;
+      width: 60px;
+      transform: translateX(-50%);
+      left: 50%;
+      position: relative;
+    }
   }
 }
