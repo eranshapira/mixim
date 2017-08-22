@@ -12,17 +12,14 @@ Includes following:
 Requirements:
 
 - NodeJS 6+ is required.
-- [Yarn](https://yarnpkg.com) is optional to use, but I recommend using it. (if no - npm is ok).  
 
 ### Usage
 
-1. Install dependencies `yarn i`
-2. Start dev server `yarn yarn dev` open [http://localhost:2992](http://localhost:2992)
-3. Lint your code `yarn run lint`
-4. Run unit tests `yarn run test`
-5. Create build for deployment `yarn run build` for production build, or `yarn run build-dev` for development build
-
-To analyze your bundle size - I recommend using [Webpack Bundle Analyzer](https://github.com/th0r/webpack-bundle-analyzer)
+1. Install dependencies `npm i`
+2. Start dev server `npm yarn dev` open [http://localhost:2992](http://localhost:2992)
+3. Lint your code `npm run lint`
+4. Run unit tests `npm run test`
+5. Create build for deployment `npm run build` for production build, or `npm run build-dev` for development build
 
 ---
 
@@ -56,8 +53,6 @@ At least briefly read [webpack documentation](http://webpack.github.io/docs/) it
         └── index.test.js  # entry point for test karma
 
 ### Styleguide
-
-Except my notes below(which can be incomplete and outdated), I highly encourage you to check out:
 
 - [Angular Style Guide, by John Papa](https://github.com/johnpapa/angular-styleguide)
 - [Angular 1.x styleguide, by Todd Motto](https://github.com/toddmotto/angular-styleguide)
