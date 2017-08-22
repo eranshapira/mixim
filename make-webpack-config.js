@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = function (options) {
   const entry = {
-    main: './src/index',
+    main: './src/lazyload',
   };
 
   const defaultLoaders = [
